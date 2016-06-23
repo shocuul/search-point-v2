@@ -1,0 +1,32 @@
+<ion-navbar *navbar>
+  <ion-title class="search-point-logo">
+    &nbsp;
+  </ion-title>
+</ion-navbar>
+
+<ion-content padding class="home">
+  <sebm-google-map 
+  [latitude]="lat" 
+  [longitude]="lng"
+  [zoom]="15"
+  [disableDefaultUI]="false">
+
+  <sebm-google-map-marker 
+  *ngFor="let m of dataProvider.items | async; let i = index"
+  [latitude]="m._gpsLatitude"
+  [longitude]="m._gpsLongitude"
+  [iconUrl]="m._marker">
+  <sebm-google-map-info-window>
+    <ion-card>
+      <ion-card-header>
+        Header
+      </ion-card-header>
+      <ion-card-content>
+        The British use the term "header", but the American term "head-shot" the English simply refuse to adopt.
+      </ion-card-content>
+    </ion-card>
+  </sebm-google-map-info-window>
+
+  </sebm-google-map-marker>
+	</sebm-google-map>
+</ion-content>
