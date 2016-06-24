@@ -37,6 +37,8 @@ export class AppProvider {
         items.push(new Item(item.ID,item.post_content,item.post_title,item.link,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
       }));
+      console.log("Items");
+      console.log(items);
       this._items.next(items);
     })
   }
@@ -83,6 +85,7 @@ export class AppProvider {
                 }
               })
             }));
+            console.log(categories);
             this._categories.next(categories);
       },
       err => console.log("Error retrieving Categories")

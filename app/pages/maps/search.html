@@ -1,0 +1,34 @@
+<ion-toolbar>
+  <ion-title>Busqueda</ion-title>
+  <ion-buttons end>
+    <button royal (click)="close()">
+      <ion-icon name="close"></ion-icon>
+    </button>
+  </ion-buttons>
+  </ion-toolbar>
+  <ion-content>
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Busqueda...</ion-label>
+        <ion-input type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Categoria</ion-label>
+        <ion-select [(ngModel)]="category">
+          <div *ngFor="let headCategory of categories">
+            <ion-option value="{{headCategory._id}}"><img src="{{headCategory._icon}}">{{headCategory._name}}</ion-option>
+            <ion-option *ngFor="let child of headCategory._children" value="{{child._id}}"> - {{child._name}}</ion-option>
+          </div>
+        </ion-select>
+      </ion-item>
+      <ion-item-divider>Buscar alrededor</ion-item-divider>
+      <ion-item>
+      <ion-range min="1" max="300" pin="true" [(ngModel)]="range" secondary>
+      <ion-icon range-left name="navigate"></ion-icon>
+      <div range-right>{{range}}km.</div>
+      </ion-range>
+      </ion-item>
+      {{category}}
+      <button full>Buscar</button>
+    </ion-list>
+  </ion-content>

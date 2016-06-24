@@ -2,6 +2,11 @@
   <ion-title class="search-point-logo">
     &nbsp;
   </ion-title>
+  <ion-buttons end>
+    <button (click)="showModal()">
+      <ion-icon name="search"></ion-icon>
+    </button>
+  </ion-buttons>
 </ion-navbar>
 
 <ion-content padding class="home">
@@ -12,7 +17,7 @@
   [disableDefaultUI]="false">
 
   <sebm-google-map-marker 
-  *ngFor="let m of dataProvider.items | async; let i = index"
+  *ngFor="let m of appProvider.items | async; let i = index"
   [latitude]="m._gpsLatitude"
   [longitude]="m._gpsLongitude"
   [iconUrl]="m._marker">
