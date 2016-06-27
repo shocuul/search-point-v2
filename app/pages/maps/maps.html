@@ -9,12 +9,14 @@
   </ion-buttons>
 </ion-navbar>
 
-<ion-content padding class="home">
+<ion-content class="maps">
+
   <sebm-google-map 
   [latitude]="lat" 
   [longitude]="lng"
   [zoom]="15"
   [disableDefaultUI]="false">
+
 
   <sebm-google-map-marker 
   *ngFor="let m of appProvider.items | async; let i = index"

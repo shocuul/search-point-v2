@@ -11,6 +11,10 @@ export class WpApi {
         return this.http.get('http://dummy.flyhighpr.com/wp-json/wp/v2/ait-dir-item-category?page=1&per_page=100');
     }
 
+    getLocations(){
+        return this.http.get('http://dummy.flyhighpr.com/wp-json/wp/v2/ait-dir-item-location?page=1&per_page=100');
+    }
+
     getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
         var body = "lat=" + latitude + "&lon=" + longitude + "&radius=" + radius;
         if(category != undefined){

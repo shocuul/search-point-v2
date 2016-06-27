@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {WpApi} from './wp-api';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
-import {Category, Item} from './data-clases';
+import {Category, Item, Location} from './data-clases';
 import {BehaviorSubject} from 'rxjs/Rx';
 
 
@@ -24,6 +24,10 @@ export class AppProvider {
 
   public items:Observable<Array<Item>> = this._items.asObservable();
 
+  private _locations: BehaviorSubject<Array<Location>> = new BehaviorSubject([]);
+
+  public locations:Observable<Array<Location>> = this._locations.asObservable();
+
   //categories: Array<Category>;
 
   constructor(private wpApi: WpApi) {
@@ -34,7 +38,7 @@ export class AppProvider {
     this.wpApi.getItems(latitude,longitude,radius,category,location,search).subscribe(res => {
       let items:Array<Item> = [];
       (<Object[]>res.json().map((item:any) =>{
-        items.push(new Item(item.ID,item.post_content,item.post_title,item.link,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
+        items.push(new Item(item.ID,item.post_content,item.post_title,item.link,item.category_id,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
       }));
       console.log("Items");
@@ -44,6 +48,24 @@ export class AppProvider {
   }
 
   loadInitialData(){
+    this.wpApi.getLocations().subscribe(res => {
+      let locations:Array<Location> = [];
+      (<Object[]>res.json().map((location: any)=>{
+        if(location.parent == 0){
+          locations.push(new Location(location.id, location.description, location.name,location.link, location.location_meta.icon, location.location_meta.excerpt));
+        }
+      }));
+      (<Object[]> res.json().map((location:any) => {
+        locations.map((parent:Location) => {
+          if(location.parent != 0){
+            if(parent._id == location.parent){
+              parent.addClildren(new Location(location.id, location.description, location.name, location.link, location.location_meta.icon, location.location_meta.excerpt));
+            }
+          }
+        })
+      }));
+      this._locations.next(locations);
+    })
     this.wpApi.getCategories().subscribe(res => {
       /*res.json().
       res.map((categories: Array<any>) => {
@@ -85,7 +107,7 @@ export class AppProvider {
                 }
               })
             }));
-            console.log(categories);
+            //console.log(categories);
             this._categories.next(categories);
       },
       err => console.log("Error retrieving Categories")

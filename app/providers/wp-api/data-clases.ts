@@ -37,7 +37,26 @@ interface SocialData{
     link:string;
 }
 
+export class Location extends Post{
+    _children:Location[];
+    _icon:string;
+    _excerpt:string;
+    constructor(id:number, description:string, name:string, link:string, icon:string, excerpt:string){
+        super(id,description,name,link);
+        this._icon = icon;
+        this._excerpt = excerpt;
+    }
+
+    addClildren(child:Location){
+        if(this._children == undefined){
+            this._children = new Array<Location>();
+        }
+        this._children.push(child);
+    }
+}
+
 export class Item extends Post{
+    _category_id:number;
     _marker:string;
     _address:string;
     _gpsLatitude:number;
@@ -55,8 +74,9 @@ export class Item extends Post{
     _alternativeContent:string;
     _social:SocialData[];
     _gallery:string[];
-    constructor(id:number, description:string, name:string, link:string, marker:string, address:string, gpsLatitude:number, gpsLongitude:number, telephone:string, email:string, web:string, alternativeContent:string){
+    constructor(id:number, description:string, name:string, link:string, category_id:number, marker:string, address:string, gpsLatitude:number, gpsLongitude:number, telephone:string, email:string, web:string, alternativeContent:string){
         super(id,description,name,link);
+        this._category_id = category_id;
         this._marker = marker;
         this._address = address;
         this._gpsLatitude = gpsLatitude;
