@@ -17,6 +17,7 @@ export class Category extends Post{
     _icon:string;
     _marker:string;
     _excerpt:string;
+    _available:boolean = false;
     constructor(id:number, description:string, name:string,link:string,icon:string, marker:string, excerpt:string){
         super(id,description,name,link);
         this._icon = icon;
@@ -24,7 +25,14 @@ export class Category extends Post{
         this._excerpt = excerpt;
         
     }
+
+    setAvailable(){
+        this._available = true;
+    }
     
+    setUnavailable(){
+        this._available = false;
+    }
     addChilden(child:Category){
         if(this._children == undefined){
             this._children = new Array<Category>();

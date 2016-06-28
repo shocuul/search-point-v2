@@ -1,0 +1,9 @@
+<ion-item-group *ngFor="let parent of appProvider.categories | available-cat | async">
+            <ion-row class="head-row">
+            <ion-col width-20><img src="{{parent._icon}}"></ion-col><ion-col> {{parent._name}}</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let item of parent._children" class="row-dots">
+                <ion-col width-20><img src="{{item._icon}}"></ion-col>
+                <ion-col>   {{item._name}} </ion-col>
+            </ion-row>
+  </ion-item-group>

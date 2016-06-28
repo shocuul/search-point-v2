@@ -16,22 +16,37 @@ import {BehaviorSubject} from 'rxjs/Rx';
 @Injectable()
 export class AppProvider {
 
+  //Categories
+
   private _categories: BehaviorSubject<Array<Category>> = new BehaviorSubject([]);
 
   public categories:Observable<Array<Category>> = this._categories.asObservable();
+
+  private _baseCategories:Array<Category>;
+
+  private _filteredCategories:BehaviorSubject<Array<number>> = new BehaviorSubject([]);
+
+  public filteredCategories:Observable<Array<number>> = this._filteredCategories.asObservable();
+
+  //Items
 
   private _items: BehaviorSubject<Array<Item>> = new BehaviorSubject([]);
 
   public items:Observable<Array<Item>> = this._items.asObservable();
 
+  //Locations
+
   private _locations: BehaviorSubject<Array<Location>> = new BehaviorSubject([]);
 
   public locations:Observable<Array<Location>> = this._locations.asObservable();
+
+  public _availableCategoryId:number[];
 
   //categories: Array<Category>;
 
   constructor(private wpApi: WpApi) {
     this.loadInitialData();
+    this._availableCategoryId = new Array<number>();
   }
 
   getItems(latitude:number, longitude:number, radius:number = 10, category?:number, location?:number, search?:string){
@@ -41,10 +56,38 @@ export class AppProvider {
         items.push(new Item(item.ID,item.post_content,item.post_title,item.link,item.category_id,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
       }));
-      console.log("Items");
-      console.log(items);
+      items.forEach((item:Item)=>{
+        if(0 > this._availableCategoryId.indexOf(item._category_id)){
+          this._availableCategoryId.push(item._category_id);
+        }
+      })
+      console.log(this._availableCategoryId);
+      //this.filterCategories();
       this._items.next(items);
     })
+  }
+
+  filterCategories(){
+    this.categories.subscribe(data => {
+      let categories = data;
+      categories.forEach((parent:Category)=>{
+        if(0 > this._availableCategoryId.indexOf(parent._id)){
+          parent.setAvailable();
+        }
+        parent._children.forEach((children:Category)=>{
+          if(0 > this._availableCategoryId.indexOf(children._id)){
+            children.setAvailable();
+          }
+        })
+      })
+      console.log(categories);
+      this._categories.next(categories);
+    })
+    
+  }
+
+  resetAvailableCategories(){
+    this._categories.next(this._baseCategories);
   }
 
   loadInitialData(){
@@ -107,7 +150,7 @@ export class AppProvider {
                 }
               })
             }));
-            //console.log(categories);
+            this._baseCategories = categories;
             this._categories.next(categories);
       },
       err => console.log("Error retrieving Categories")
