@@ -23,14 +23,14 @@ export class AvailableCategories implements PipeTransform{
                     parent._children.splice(indexChild,1);
                 }
             })
-            if(this._appProvider._availableCategoryId.indexOf(parent._id) != -1){
-                parent.setAvailable();
-            }else{
-                if(parent._children.length < 0){
-                    allCategories.splice(indexParent,1);
+                if(this._appProvider._availableCategoryId.indexOf(parent._id) != -1){
+                    parent.setAvailable();
+                }else{
+                    if(parent._children.length < 0){
+                        allCategories.splice(indexParent,1);
+                    }
                 }
-            }
-        })
+            })
         let returnData = allCategories.values;
         return returnData;
         })

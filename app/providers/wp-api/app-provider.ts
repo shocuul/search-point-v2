@@ -3,7 +3,8 @@ import {WpApi} from './wp-api';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
 import {Category, Item, Location} from './data-clases';
-import {BehaviorSubject} from 'rxjs/Rx';
+import {BehaviorSubject, ReplaySubject} from 'rxjs/Rx';
+
 
 
 
@@ -24,9 +25,10 @@ export class AppProvider {
 
   private _baseCategories:Array<Category>;
 
-  private _filteredCategories:BehaviorSubject<Array<number>> = new BehaviorSubject([]);
+  private _filter: BehaviorSubject<Array<Category>> = new BehaviorSubject([]);
 
-  public filteredCategories:Observable<Array<number>> = this._filteredCategories.asObservable();
+  public filter:Observable<Array<Category>> = this._filter.asObservable();
+
 
   //Items
 
@@ -61,28 +63,46 @@ export class AppProvider {
           this._availableCategoryId.push(item._category_id);
         }
       })
-      console.log(this._availableCategoryId);
-      //this.filterCategories();
       this._items.next(items);
+      this.filterCategories();
     })
   }
 
-  filterCategories(){
-    this.categories.subscribe(data => {
-      let categories = data;
-      categories.forEach((parent:Category)=>{
-        if(0 > this._availableCategoryId.indexOf(parent._id)){
-          parent.setAvailable();
-        }
-        parent._children.forEach((children:Category)=>{
-          if(0 > this._availableCategoryId.indexOf(children._id)){
-            children.setAvailable();
-          }
-        })
+  public filterCategories(){
+    let allCategories:Array<Category> = this._categories.getValue();
+    //console.log("Before Filter");
+    //console.log(allCategories);
+    //allCategories.splice(0,2);
+    
+    allCategories.forEach((parent:Category,indexParent:number)=>{
+            parent._children.forEach((child:Category, indexChild:number)=>{
+                console.log(parent._name + ' ' + indexChild);
+
+                if(this._availableCategoryId.indexOf(child._id) > -1){
+                    child.setAvailable();
+                }else{
+                    parent.deleteChild(child);
+                }
+            })
+                if(this._availableCategoryId.indexOf(parent._id) > -1){
+                    parent.setAvailable();
+                }else{
+                    if(parent._children.length == 0){
+                        allCategories = allCategories.filter(item => item._id !== parent._id);
+                    }else{
+                      //parent.setAvailable();
+                    }
+                }
+                
+                
       })
-      console.log(categories);
-      this._categories.next(categories);
-    })
+      //console.log("After Filter");
+      //console.log(allCategories);
+      
+      this._filter.next(allCategories);
+      console.log(this._filter.getValue());
+      
+      //console.log(this._filter.value);
     
   }
 
@@ -151,6 +171,7 @@ export class AppProvider {
               })
             }));
             this._baseCategories = categories;
+            //this._filter.next(categories);
             this._categories.next(categories);
       },
       err => console.log("Error retrieving Categories")

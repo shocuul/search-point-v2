@@ -26,6 +26,10 @@ export class Category extends Post{
         
     }
 
+    deleteChild(child:Category){
+        this._children = this._children.filter(item => item._id !== child._id);
+    }
+
     setAvailable(){
         this._available = true;
     }

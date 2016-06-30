@@ -15,7 +15,7 @@
       <ion-item>
         <ion-label>Categoria</ion-label>
         <ion-select [(ngModel)]="category">
-          <div *ngFor="let headCategory of appProvider.categories | async">
+          <div *ngFor="let headCategory of appProvider.filter | async">
             <ion-option value="{{headCategory._id}}"><img src="{{headCategory._icon}}">{{headCategory._name}}</ion-option>
             <ion-option *ngFor="let child of headCategory._children" value="{{child._id}}"> - {{child._name}}</ion-option>
           </div>
