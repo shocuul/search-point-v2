@@ -38,7 +38,7 @@ export class MapsPage {
   }
 
   showFilterPopOver(ev){
-    let popover = Popover.create(FilterPopover);
+    let popover = Popover.create(FilterPopover,{cat:this.appProvider.filter});
     this.navController.present(popover,{
       ev:ev
     });

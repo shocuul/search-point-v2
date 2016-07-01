@@ -13,12 +13,8 @@
 </ion-navbar>
 
 <ion-content class="maps">
-  <ion-list>
-    <ion-item *ngFor="let item of appProvider.filter | async">
-      {{item._name}}
-    </ion-item>
-  </ion-list>
- <!--
+
+ 
   <sebm-google-map 
   [latitude]="lat" 
   [longitude]="lng"
@@ -43,5 +39,5 @@
   </sebm-google-map-info-window>
 
   </sebm-google-map-marker>
-	</sebm-google-map>-->
+	</sebm-google-map>
 </ion-content>

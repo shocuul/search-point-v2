@@ -2,7 +2,7 @@
             <ion-row class="head-row">
             <ion-col width-20><img src="{{item._icon}}"></ion-col><ion-col> {{item._name}}</ion-col>
             </ion-row>
-            <ion-row *ngFor="let itemChild of item._children" class="row-dots">
+            <ion-row *ngFor="let itemChild of item._children" class="row-dots" (click)="filterData(itemChild)">
                 <ion-col width-20><img src="{{itemChild._icon}}"></ion-col>
                 <ion-col>   {{itemChild._name}} </ion-col>
             </ion-row>

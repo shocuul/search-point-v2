@@ -36,6 +36,8 @@ export class AppProvider {
 
   public items:Observable<Array<Item>> = this._items.asObservable();
 
+  private _baseItems : Array<Item>;
+
   //Locations
 
   private _locations: BehaviorSubject<Array<Location>> = new BehaviorSubject([]);
@@ -55,7 +57,7 @@ export class AppProvider {
     this.wpApi.getItems(latitude,longitude,radius,category,location,search).subscribe(res => {
       let items:Array<Item> = [];
       (<Object[]>res.json().map((item:any) =>{
-        items.push(new Item(item.ID,item.post_content,item.post_title,item.link,item.category_id,item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
+        items.push(new Item(item.ID,item.post_content,item.post_title,item.link,parseInt(item.category_id),item.marker,item.optionsDir.address,parseFloat(item.optionsDir.gpsLatitude),
           parseFloat(item.optionsDir.gpsLongitude), item.optionsDir.telephone, item.optionsDir.email, item.optionsDir.web, item.optionsDir.alternativeContent));
       }));
       items.forEach((item:Item)=>{
@@ -66,6 +68,16 @@ export class AppProvider {
       this._items.next(items);
       this.filterCategories();
     })
+  }
+
+  public filterItems(catId:number){
+    console.log(this._items.getValue());
+    console.log(this._categories.getValue());
+    this._baseItems = this._items.getValue();
+    let items:Array<Item> = this._items.getValue();
+    console.log(items);
+    items = items.filter(item => item._category_id === catId);
+    //this._items.next(this._items.getValue().filter(item => item._category_id === catId));
   }
 
   public filterCategories(){
