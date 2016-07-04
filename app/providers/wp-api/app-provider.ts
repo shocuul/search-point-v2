@@ -67,17 +67,23 @@ export class AppProvider {
       })
       this._items.next(items);
       this.filterCategories();
+      this._baseItems = items;
     })
   }
 
   public filterItems(catId:number){
-    console.log(this._items.getValue());
-    console.log(this._categories.getValue());
-    this._baseItems = this._items.getValue();
+    this.restoreItems();
+    //this._baseItems = this._items.getValue();
     let items:Array<Item> = this._items.getValue();
-    console.log(items);
+    
     items = items.filter(item => item._category_id === catId);
+    console.log(items);
+    this._items.next(items);
     //this._items.next(this._items.getValue().filter(item => item._category_id === catId));
+  }
+
+  restoreItems(){
+    this._items.next(this._baseItems);
   }
 
   public filterCategories(){
